@@ -59,6 +59,13 @@ int set_network_mode_for_slot(const char *mode, const char *slot);
  */
 int switch_slot(const char *slot);
 
+/**
+ * @brief 最近一次设置网络模式是否发生降级
+ *        （选择 nsa_only 但设备端 oFono 不支持，已改用 NR 5G/LTE auto）
+ * @return 1 发生降级, 0 未降级
+ */
+int modem_last_mode_fallback(void);
+
 #ifdef __cplusplus
 }
 #endif

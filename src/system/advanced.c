@@ -378,7 +378,8 @@ static int is_5g_network(void) {
 /* 辅助函数：添加小区对象到JSON Builder */
 static void add_cell_to_json(JsonBuilder *j, const char *rat, const char *band_prefix, 
                               const char *band, int arfcn, int pci,
-                              double rsrp, double rsrq, double sinr, int is_serving) {
+                              double rsrp, double rsrq, double sinr, int is_serving,
+                              int is_secondary) {
     char band_str[32];
     snprintf(band_str, sizeof(band_str), "%s%s", band_prefix, band);
     
@@ -391,6 +392,8 @@ static void add_cell_to_json(JsonBuilder *j, const char *rat, const char *band_p
     json_add_double(j, "rsrq", rsrq);
     json_add_double(j, "sinr", sinr);
     json_add_bool(j, "isServing", is_serving);
+    /* NSA 双连接：主载波之外的另一路。SA 下为 0 */
+    json_add_bool(j, "isSecondary", is_secondary);
     json_obj_close(j);
 }
 
@@ -443,7 +446,8 @@ void handle_get_cells(struct mg_connection *c, struct mg_http_message *hm) {
                         arfcn, pci,
                         atof(data[3][0]) / 100.0, atof(data[4][0]) / 100.0,
                         atof(data[33][0]) / 100.0,
-                        is_5g ? 0 : 1);  /* SA 时不是主小区 */
+                        is_5g ? 0 : 1,   /* SA 时不是主小区 */
+                        is_5g ? 1 : 0);  /* SA 时 LTE 是辅载波 */
                     cell_count++;
                 }
             }
@@ -469,7 +473,8 @@ void handle_get_cells(struct mg_connection *c, struct mg_http_message *hm) {
                         arfcn, pci,
                         atof(data[3][0]) / 100.0, atof(data[4][0]) / 100.0,
                         atof(data[15][0]) / 100.0,
-                        is_5g ? 1 : 0);  /* NSA 下 NR 不是主小区，但仍在列表中可锁定 */
+                        is_5g ? 1 : 0,   /* NSA 下 NR 不是主小区 */
+                        is_5g ? 0 : 1);  /* NSA 下 NR 是辅载波，前端据此显示 5G 已连接 */
                     cell_count++;
                 }
             }
@@ -497,7 +502,7 @@ void handle_get_cells(struct mg_connection *c, struct mg_http_message *hm) {
             add_cell_to_json(j, "4G", "B", band,
                 arfcn, pci,
                 atof(data[i][2]) / 100.0, atof(data[i][3]) / 100.0,
-                atof(data[i][6]) / 100.0, 0);
+                atof(data[i][7]) / 100.0, 0, 0);   /* SINR 在第 7 列，第 6 列恒为 0 */
             cell_count++;
         }
         g_free(result);
@@ -526,7 +531,7 @@ void handle_get_cells(struct mg_connection *c, struct mg_http_message *hm) {
                 add_cell_to_json(j, "5G", "N", band_str,
                     arfcn, pci,
                     atof(data[3][i]) / 100.0, atof(data[4][i]) / 100.0,
-                    atof(data[5][i]) / 100.0, 0);
+                    atof(data[5][i]) / 100.0, 0, 0);
                 cell_count++;
             }
         }

@@ -153,11 +153,24 @@ void handle_set_network(struct mg_connection *c, struct mg_http_message *hm) {
   }
 
   if (set_network_mode_for_slot(mode, strlen(slot) > 0 ? slot : NULL) == 0) {
-    HTTP_SUCCESS(c, "Network mode updated successfully");
+    if (modem_last_mode_fallback()) {
+      /* 选择了 NSA only，但设备端 oFono 没有这一档，已改用等价的 5G/LTE 自动 */
+      JsonBuilder *jb = json_new();
+      json_obj_open(jb);
+      json_add_int(jb, "Code", 0);
+      json_add_str(jb, "Error", "");
+      json_add_int(jb, "fallback", 1);
+      json_add_str(jb, "message",
+                   "设备不支持独立的 NSA only 档位，已切换为 NR 5G/LTE auto"
+                   "（同样支持 NSA 双连接）");
+      json_obj_close(jb);
+      HTTP_OK_FREE(c, json_finish(jb));
+    } else {
+      HTTP_SUCCESS(c, "Network mode updated successfully");
+    }
   } else {
-    HTTP_OK(
-        c,
-        "{\"status\":\"error\",\"message\":\"Failed to update network mode\"}");
+    /* 必须返回非 2xx，否则前端只看 HTTP 状态码，会把失败当成功 */
+    HTTP_ERROR(c, 500, "Failed to update network mode");
   }
 }
 

@@ -52,10 +52,18 @@ async function handleAirplaneToggle() {
 }
 
 async function handleNetworkModeChange(mode) {
+  const previous = selectedNetworkMode.value
+  selectedNetworkMode.value = mode
   try {
-    await setNetworkMode(mode)
-    success(t('network.networkModeSubmitted'))
+    const res = await setNetworkMode(mode)
+    // 后端可能降级（设备不支持 NSA only → 改用 5G/LTE 自动），如实提示
+    if (res && res.fallback) {
+      success(res.message || t('network.nsaFallback'))
+    } else {
+      success(t('network.networkModeSubmitted'))
+    }
   } catch (err) {
+    selectedNetworkMode.value = previous
     error(t('network.switchFailed'))
   }
 }
@@ -223,7 +231,7 @@ onMounted(() => {
           <button
             v-for="mode in networkModes"
             :key="mode.value"
-            @click="handleNetworkModeChange(mode.value); selectedNetworkMode = mode.value"
+            @click="handleNetworkModeChange(mode.value)"
             class="p-4 rounded-xl border transition-all duration-300"
             :class="selectedNetworkMode === mode.value 
               ? 'bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/50' 

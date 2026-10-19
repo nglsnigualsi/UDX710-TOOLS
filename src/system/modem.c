@@ -44,6 +44,13 @@ int set_network_mode(const char *mode) {
     return set_network_mode_for_slot(mode, NULL);
 }
 
+/* 最近一次设置网络模式时是否发生了降级（设备端 oFono 不认 NSA only） */
+static int g_mode_fallback = 0;
+
+int modem_last_mode_fallback(void) {
+    return g_mode_fallback;
+}
+
 int set_network_mode_for_slot(const char *mode, const char *slot) {
     char ril_path[32];
     int mode_code;
@@ -72,9 +79,22 @@ int set_network_mode_for_slot(const char *mode, const char *slot) {
     }
 
     if (ofono_network_set_mode_sync(ril_path, mode_code, OFONO_TIMEOUT_MS) != 0) {
+        /*
+         * 设备端 oFono 的 TechnologyPreference 只接受标准取值，"NSA only"
+         * 这一档很多固件并不认识，直接下发会返回 InvalidArguments 而不生效。
+         * NSA(EN-DC) 本身要求 LTE 锚点与 NR 同时可用，"NR 5G/LTE auto" 是
+         * 同样具备 NSA 能力的档位，故作为降级目标；是否降级由调用方提示给用户。
+         */
+        if (strcmp(mode, "nsa_only") == 0 &&
+            ofono_network_set_mode_sync(ril_path, MODE_NR_5G_LTE_AUTO,
+                                        OFONO_TIMEOUT_MS) == 0) {
+            g_mode_fallback = 1;
+            return 0;
+        }
         return -1;
     }
 
+    g_mode_fallback = 0;
     return 0;
 }
 

@@ -26,7 +26,9 @@ const customLockForm = ref({
 })
 
 const servingCell = computed(() => cells.value.find(c => c.isServing))
-const neighborCells = computed(() => cells.value.filter(c => !c.isServing))
+// NSA 双连接时，主载波之外的另一路（NR 辅载波）
+const secondaryCell = computed(() => cells.value.find(c => c.isSecondary))
+const neighborCells = computed(() => cells.value.filter(c => !c.isServing && !c.isSecondary))
 
 // 计算小区信号综合评分（用于推荐最佳小区）
 function calculateCellScore(cell) {
@@ -314,6 +316,44 @@ onMounted(() => { fetchBands(); fetchCells() })
             <div class="text-center hidden sm:block">
               <p class="text-slate-500 dark:text-white/50 text-[10px]">SINR</p>
               <p class="text-indigo-600 dark:text-indigo-400 font-semibold text-sm">{{ servingCell.sinr?.toFixed(1) }}</p>
+            </div>
+          </div>
+
+          <!-- NSA 辅载波：LTE 锚点与 NR 同时在线，才是真正的双连接 -->
+          <div v-if="secondaryCell" class="mt-3 pt-3 border-t border-green-200 dark:border-green-500/30">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 text-[10px] rounded font-medium">{{ t('advanced.nsaSecondary') || 'NSA 辅载波' }}</span>
+              <span class="text-slate-500 dark:text-white/50 text-[10px]">{{ t('advanced.dualConnected') || '双连接已建立' }}</span>
+            </div>
+            <div class="grid grid-cols-4 sm:grid-cols-7 gap-3">
+              <div class="text-center">
+                <p class="text-slate-500 dark:text-white/50 text-[10px]">{{ t('advanced.rat') }}</p>
+                <p class="text-slate-900 dark:text-white font-semibold text-sm">{{ secondaryCell.rat }}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-slate-500 dark:text-white/50 text-[10px]">{{ t('advanced.band') }}</p>
+                <p class="text-purple-600 dark:text-purple-400 font-semibold text-sm">{{ secondaryCell.band }}</p>
+              </div>
+              <div class="text-center hidden sm:block">
+                <p class="text-slate-500 dark:text-white/50 text-[10px]">{{ t('advanced.arfcn') }}</p>
+                <p class="text-slate-900 dark:text-white font-mono text-xs">{{ secondaryCell.arfcn }}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-slate-500 dark:text-white/50 text-[10px]">{{ t('advanced.pci') }}</p>
+                <p class="text-slate-900 dark:text-white font-semibold text-sm">{{ secondaryCell.pci }}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-slate-500 dark:text-white/50 text-[10px]">RSRP</p>
+                <p :class="getSignalColor(secondaryCell.rsrp)" class="font-semibold text-sm">{{ secondaryCell.rsrp?.toFixed(0) }}</p>
+              </div>
+              <div class="text-center hidden sm:block">
+                <p class="text-slate-500 dark:text-white/50 text-[10px]">RSRQ</p>
+                <p class="text-cyan-600 dark:text-cyan-400 font-semibold text-sm">{{ secondaryCell.rsrq?.toFixed(1) }}</p>
+              </div>
+              <div class="text-center hidden sm:block">
+                <p class="text-slate-500 dark:text-white/50 text-[10px]">SINR</p>
+                <p class="text-indigo-600 dark:text-indigo-400 font-semibold text-sm">{{ secondaryCell.sinr?.toFixed(1) }}</p>
+              </div>
             </div>
           </div>
         </div>
