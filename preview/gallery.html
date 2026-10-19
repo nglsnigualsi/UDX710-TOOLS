@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UDX710-TOOLS 界面总览</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 24px 64px;
+    background: radial-gradient(1200px 600px at 20% -10%, #1e293b 0%, #0f172a 45%, #020617 100%);
+    color: #e2e8f0;
+    font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  header { max-width: 1400px; margin: 0 auto 28px; }
+  h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: .5px; }
+  .sub { color: #94a3b8; font-size: 14px; line-height: 1.7; }
+  .badge {
+    display: inline-block; margin: 10px 8px 0 0; padding: 4px 11px;
+    border-radius: 999px; font-size: 12px; font-weight: 600;
+    background: #1e40af33; border: 1px solid #3b82f655; color: #93c5fd;
+  }
+  .badge.green { background:#065f4633; border-color:#10b98155; color:#6ee7b7; }
+  .badge.amber { background:#78350f33; border-color:#f59e0b55; color:#fcd34d; }
+  .grid {
+    max-width: 1400px; margin: 0 auto;
+    display: grid; gap: 26px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  figure { margin: 0; }
+  .card {
+    border-radius: 18px; overflow: hidden;
+    background: #0b1220;
+    border: 1px solid #1e293b;
+    box-shadow: 0 14px 40px -18px #000, 0 0 0 1px #ffffff08 inset;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: #3b82f688;
+    box-shadow: 0 22px 50px -18px #000, 0 0 24px -6px #3b82f655;
+  }
+  .card img { display: block; width: 100%; height: auto; }
+  figcaption {
+    padding: 11px 14px 13px; font-size: 13.5px; font-weight: 600;
+    color: #cbd5e1; border-top: 1px solid #1e293b;
+    background: linear-gradient(#0e1626, #0b1220);
+  }
+  figcaption small { display:block; font-weight: 400; color:#64748b; margin-top:3px; font-size:11.5px;}
+  .highlight { border-color: #10b98166; box-shadow: 0 14px 40px -18px #000, 0 0 22px -8px #10b98166; }
+</style>
+</head>
+<body>
+<header>
+  <h1>UDX710-TOOLS 界面总览</h1>
+  <div class="sub">
+    本地预览 · 390×900（2× DPR）· 数据来自 mock 后端（字段结构对齐 <code>src/</code> 真实处理函数）<br>
+    已替换 <code>SystemMonitor.vue</code> / <code>SystemSettings.vue</code> 后重新构建的 <code>web/dist</code>
+  </div>
+  <span class="badge green">构建通过</span>
+  <span class="badge">16 个功能页</span>
+  <span class="badge amber">双连接频段显示已启用</span>
+  <span class="badge">i18n 0 缺失</span>
+</header>
+
+<div class="grid">
+  <figure class="highlight">
+    <div class="card"><img src="shots/01-monitor-dual.png" alt="系统监控"></div>
+    <figcaption>系统监控 · 双连接模式<small>B3+N41，含 LTE 锚点独立行</small></figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/00-monitor-original.png" alt="系统监控原版"></div>
+    <figcaption>系统监控 · 原版单频段<small>关闭开关后的对照效果</small></figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/02-network.png" alt="网络管理"></div>
+    <figcaption>网络管理</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/03-netif.png" alt="网络接口"></div>
+    <figcaption>网络接口</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/04-apn.png" alt="APN配置"></div>
+    <figcaption>APN 配置</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/05-advanced.png" alt="高级网络"></div>
+    <figcaption>高级网络<small>频段锁定 / 小区锁定</small></figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/06-sms.png" alt="短信管理"></div>
+    <figcaption>短信管理</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/07-traffic.png" alt="流量统计"></div>
+    <figcaption>流量统计</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/08-battery.png" alt="充电控制"></div>
+    <figcaption>充电控制</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/09-rathole.png" alt="内网穿透"></div>
+    <figcaption>内网穿透（Rathole）</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/10-ipv6.png" alt="IPv6转发"></div>
+    <figcaption>IPv6 转发</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/11-update.png" alt="系统更新"></div>
+    <figcaption>系统更新</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/12-at.png" alt="AT调试"></div>
+    <figcaption>AT 调试</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/13-terminal.png" alt="Web终端"></div>
+    <figcaption>Web 终端</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/14-usb.png" alt="USB模式"></div>
+    <figcaption>USB 模式</figcaption>
+  </figure>
+  <figure>
+    <div class="card"><img src="shots/15-plugins.png" alt="插件商城"></div>
+    <figcaption>插件商城</figcaption>
+  </figure>
+  <figure class="highlight">
+    <div class="card"><img src="shots/16-settings.png" alt="系统设置"></div>
+    <figcaption>系统设置<small>含新增「双连接频段显示」与「手机壳模式」</small></figcaption>
+  </figure>
+</div>
+</body>
+</html>

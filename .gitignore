@@ -1,0 +1,53 @@
+# Build outputs
+src/build/
+web/dist/
+
+# Dependencies
+web/node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Compiled objects
+*.o
+*.obj
+*.exe
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Package lock (optional, uncomment if needed)
+# web/package-lock.json
+
+# 本地编译产物与打包产物（不随版本入库）
+src/build*/
+server
+preview/shots/
+preview/*.zip
+preview/*.png
+
+# 上游预编译依赖与文档截图（体积大且从不修改，保留在磁盘上不入库）
+lib/*.so
+lib/*.so.*
+share/
+docs/*.png
+docs/*.jpg
