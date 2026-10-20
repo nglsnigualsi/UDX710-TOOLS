@@ -309,6 +309,8 @@
     servingCell: '主小区',
     neighborCell: '邻小区',
     connected: '已连接',
+    nsaSecondary: 'NSA 辅载波',
+    dualConnected: '双连接已建立',
     foundCells: '发现 {count} 个小区',
     scan: '扫描',
     scanning: '扫描中',

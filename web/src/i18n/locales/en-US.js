@@ -310,6 +310,8 @@ export default {
     servingCell: 'Serving Cell',
     neighborCell: 'Neighbor Cells',
     connected: 'Connected',
+    nsaSecondary: 'NSA Secondary',
+    dualConnected: 'Dual connectivity established',
     foundCells: '{count} cells found',
     scan: 'Scan',
     scanning: 'Scanning',

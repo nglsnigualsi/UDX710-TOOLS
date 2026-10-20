@@ -78,20 +78,35 @@ int set_network_mode_for_slot(const char *mode, const char *slot) {
         }
     }
 
-    if (ofono_network_set_mode_sync(ril_path, mode_code, OFONO_TIMEOUT_MS) != 0) {
-        /*
-         * 设备端 oFono 的 TechnologyPreference 只接受标准取值，"NSA only"
-         * 这一档很多固件并不认识，直接下发会返回 InvalidArguments 而不生效。
-         * NSA(EN-DC) 本身要求 LTE 锚点与 NR 同时可用，"NR 5G/LTE auto" 是
-         * 同样具备 NSA 能力的档位，故作为降级目标；是否降级由调用方提示给用户。
-         */
-        if (strcmp(mode, "nsa_only") == 0 &&
-            ofono_network_set_mode_sync(ril_path, MODE_NR_5G_LTE_AUTO,
-                                        OFONO_TIMEOUT_MS) == 0) {
-            g_mode_fallback = 1;
-            return 0;
+    int rc = ofono_network_set_mode_sync(ril_path, mode_code, OFONO_TIMEOUT_MS);
+
+    if (strcmp(mode, "nsa_only") != 0) {
+        if (rc != 0) return -1;
+        g_mode_fallback = 0;
+        return 0;
+    }
+
+    /*
+     * NSA(EN-DC) 要求 LTE 锚点与 NR 同时可用，所以"仅 NSA"必须落在
+     * "LTE 与 NR 都允许"的档位上。这里不能只看设置接口是否返回成功：
+     * 部分固件的 oFono 对 "NSA only" 既不报错也不真正切换，档位会停在
+     * 原来的 "NR 5G only" 上——那样只有 5G、没有 LTE，B3 永远连不上，
+     * 用户看到的现象就是"开了 NSA 只连 5G"。
+     * 因此设置后一律回读实际档位，不是双制式允许就纠正为 NR 5G/LTE auto。
+     */
+    char applied[64] = {0};
+    int dual_ok = (rc == 0) &&
+                  ofono_network_get_mode_sync(ril_path, applied, sizeof(applied),
+                                              OFONO_TIMEOUT_MS) == 0 &&
+                  strstr(applied, "LTE") != NULL && strstr(applied, "only") == NULL;
+
+    if (!dual_ok) {
+        if (ofono_network_set_mode_sync(ril_path, MODE_NR_5G_LTE_AUTO,
+                                        OFONO_TIMEOUT_MS) != 0) {
+            return -1;
         }
-        return -1;
+        g_mode_fallback = 1;
+        return 0;
     }
 
     g_mode_fallback = 0;
