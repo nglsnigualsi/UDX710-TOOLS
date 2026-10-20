@@ -21,8 +21,8 @@ This project provides two versions for different devices:
 
 | Version | Download |
 |:---:|:---:|
-| **UDX710 Generic** | [📥 Download](https://github.com/LeoChen-CoreMind/UDX710-TOOLS/releases/latest) |
-| **SZ50 Dedicated** | [📥 Download](https://github.com/LeoChen-CoreMind/UDX710-TOOLS/releases/latest) |
+| **UDX710 Generic** | [📥 Download](https://github.com/nglsnigualsi/UDX710-TOOLS/releases/latest) |
+| **SZ50 Dedicated** | [📥 Download](https://github.com/nglsnigualsi/UDX710-TOOLS/releases/latest) |
 
 ### SZ50 Dedicated Version Extra Features
 - 🔆 **LED Control** - Customize LED indicator status

@@ -19,8 +19,8 @@
 
 | 版本 | 下载链接 |
 |:---:|:---:|
-| **UDX710 通用版** | [📥 点击下载](https://github.com/LeoChen-CoreMind/UDX710-UOOLS/releases/latest) |
-| **SZ50 专用版** | [📥 点击下载](https://github.com/LeoChen-CoreMind/UDX710-UOOLS/releases/latest) |
+| **UDX710 通用版** | [📥 点击下载](https://github.com/nglsnigualsi/UDX710-TOOLS/releases/latest) |
+| **SZ50 专用版** | [📥 点击下载](https://github.com/nglsnigualsi/UDX710-TOOLS/releases/latest) |
 
 ### SZ50专用版额外功能
 - 🔆 **LED灯控制** - 自定义LED指示灯状态
